@@ -1,0 +1,19 @@
+{
+  "name": "lambda_procesador",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1142.0",
+    "@aws-sdk/client-s3": "^3.1142.0",
+    "@babel/runtime": "^8.0.5",
+    "jimp": "^0.16.13"
+  }
+}

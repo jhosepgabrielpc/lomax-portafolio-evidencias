@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Producto</title>
+    <style>body { font-family: Arial; padding: 20px; } nav { margin-bottom: 20px; }</style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Catálogo</a> | <a href="registro.html">Registrar Producto</a>
+    </nav>
+    <h2>Detalle del Producto</h2>
+    <div id="detalle">Cargando...</div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        fetch(`/api/productos/${id}`)
+            .then(res => res.json())
+            .then(p => {
+                if (p.error) {
+                    document.getElementById('detalle').innerHTML = `<p style="color:red">${p.error}</p>`;
+                    return;
+                }
+                const attrs = Object.entries(p.atributos || {}).map(([k,v]) => `<li>${k}: ${v}</li>`).join('');
+                document.getElementById('detalle').innerHTML = `
+                    <img src="/api/productos/${p.producto_id}/imagen" style="max-width:300px" onerror="this.style.display='none'">
+                    <p><b>ID:</b> ${p.producto_id}</p>
+                    <p><b>Código:</b> ${p.codigo}</p>
+                    <p><b>Nombre:</b> ${p.nombre}</p>
+                    <p><b>Precio:</b> $${p.precio}</p>
+                    <p><b>Estado:</b> ${p.estado}</p>
+                    <p><b>Descripción:</b> ${p.descripcion}</p>
+                    <p><b>Atributos:</b><ul>${attrs}</ul></p>
+                `;
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Producto</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        form { display: flex; flex-direction: column; width: 300px; gap: 10px; }
+        .error { color: red; }
+        .success { color: green; }
+        nav { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Catálogo</a> | <a href="registro.html">Registrar Producto</a>
+    </nav>
+    <h2>Registrar Producto</h2>
+    <div id="mensaje"></div>
+    <form id="formRegistro">
+        <input type="text" id="codigo" placeholder="Código Único" required>
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <textarea id="descripcion" placeholder="Descripción" required></textarea>
+        <input type="number" id="precio" placeholder="Precio" step="0.01" required>
+        <select id="categoria_id" required><option value="">Cargando categorías...</option></select>
+        
+        <h4>Atributos Variables</h4>
+        <input type="text" id="attrKey" placeholder="Ej: conexion">
+        <input type="text" id="attrValue" placeholder="Ej: USB">
+        
+        <h4>Fotografía (JPEG/PNG)</h4>
+        <input type="file" id="imagen" accept="image/jpeg, image/png" required>
+        
+        <button type="submit" id="btnSubmit">Registrar y Publicar</button>
+        <button type="button" id="btnReintentar" style="display:none;" onclick="reintentarImagen()">Reintentar Imagen</button>
+    </form>
+
+    <script>
+        let currentProductId = null;
+
+        fetch('/api/categorias').then(res => res.json()).then(data => {
+            document.getElementById('categoria_id').innerHTML = data.map(c => `<option value="${c.categoria_id}">${c.nombre}</option>`).join('');
+        });
+
+        document.getElementById('formRegistro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('mensaje');
+            msg.innerHTML = 'Registrando base...';
+
+            const payload = {
+                codigo: document.getElementById('codigo').value,
+                nombre: document.getElementById('nombre').value,
+                descripcion: document.getElementById('descripcion').value,
+                precio: parseFloat(document.getElementById('precio').value),
+                categoria_id: parseInt(document.getElementById('categoria_id').value)
+            };
+
+            const k = document.getElementById('attrKey').value;
+            const v = document.getElementById('attrValue').value;
+            if (k && v) payload.atributos = { [k]: v };
+
+            try {
+                const resBase = await fetch('/api/productos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const dataBase = await resBase.json();
+                if (!resBase.ok) throw new Error(dataBase.error || 'Error base');
+
+                currentProductId = dataBase.producto_id;
+                msg.innerHTML = `<span class="success">Base registrada (${dataBase.estado}). Subiendo imagen...</span>`;
+                await subirImagen(currentProductId);
+
+            } catch (err) {
+                msg.innerHTML = `<span class="error">${err.message}</span>`;
+            }
+        });
+
+        async function subirImagen(id) {
+            const msg = document.getElementById('mensaje');
+            const fileInput = document.getElementById('imagen');
+            const formData = new FormData();
+            formData.append('imagen', fileInput.files[0]);
+
+            try {
+                const resImg = await fetch(`/api/productos/${id}/imagen`, { method: 'POST', body: formData });
+                const dataImg = await resImg.json();
+                
+                if (!resImg.ok) throw new Error(dataImg.error || 'Error imagen');
+                
+                msg.innerHTML = `<span class="success">¡Producto PUBLICADO con éxito! ID: ${id}</span>`;
+                document.getElementById('btnReintentar').style.display = 'none';
+                document.getElementById('formRegistro').reset();
+            } catch (err) {
+                msg.innerHTML += `<br><span class="error">Fallo imagen: ${err.message}. Quedó PENDIENTE.</span>`;
+                document.getElementById('btnSubmit').style.display = 'none';
+                document.getElementById('btnReintentar').style.display = 'block';
+            }
+        }
+
+        async function reintentarImagen() {
+            if (!currentProductId) return;
+            await subirImagen(currentProductId);
+        }
+    </script>
+</body>
+</html>

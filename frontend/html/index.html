@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo Lomax</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .card { border: 1px solid #ccc; padding: 10px; width: 200px; text-align: center; }
+        .card img { max-width: 100%; height: auto; }
+        nav { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Catálogo</a> | <a href="registro.html">Registrar Producto</a>
+    </nav>
+    <h2>Catálogo de Productos</h2>
+    <div class="grid" id="catalogo"></div>
+
+    <script>
+        fetch('/api/productos')
+            .then(res => res.json())
+            .then(data => {
+                const div = document.getElementById('catalogo');
+                div.innerHTML = data.map(p => `
+                    <div class="card">
+                        <img src="/api/productos/${p.producto_id}/imagen" alt="Miniatura" onerror="this.src=''">
+                        <h3>${p.nombre}</h3>
+                        <p>Precio: $${p.precio}</p>
+                        <p>Categoría ID: ${p.categoria_id}</p>
+                        <a href="detalle.html?id=${p.producto_id}">Ver Detalle</a>
+                    </div>
+                `).join('');
+            });
+    </script>
+</body>
+</html>

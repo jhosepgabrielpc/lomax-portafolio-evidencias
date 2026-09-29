@@ -1,0 +1,24 @@
+{
+  "ProductosAtributos": [
+    { "PutRequest": { "Item": { "producto_id": {"S": "P001"}, "conexion": {"S": "USB"}, "distribucion": {"S": "ISO-ES"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P002"}, "conexion": {"S": "USB"}, "distribucion": {"S": "ANSI-US"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P003"}, "conexion": {"S": "USB"}, "distribucion": {"S": "ISO-ES"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P004"}, "conexion": {"S": "Bluetooth"}, "distribucion": {"S": "ISO-ES"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P005"}, "conexion": {"S": "USB"}, "distribucion": {"S": "ANSI-US"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P006"}, "conexion": {"S": "USB"}, "botones": {"N": "6"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P007"}, "conexion": {"S": "USB"}, "botones": {"N": "3"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P008"}, "conexion": {"S": "RF 2.4GHz"}, "botones": {"N": "4"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P009"}, "conexion": {"S": "Bluetooth"}, "botones": {"N": "5"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P010"}, "conexion": {"S": "USB"}, "botones": {"N": "7"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P011"}, "pulgadas": {"N": "24"}, "resolucion": {"S": "1080p"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P012"}, "pulgadas": {"N": "27"}, "resolucion": {"S": "1440p"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P013"}, "pulgadas": {"N": "27"}, "resolucion": {"S": "1080p"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P014"}, "pulgadas": {"N": "32"}, "resolucion": {"S": "4K"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P015"}, "pulgadas": {"N": "34"}, "resolucion": {"S": "1440p Ultrawide"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P016"}, "pulgadas": {"N": "24"}, "resolucion": {"S": "1080p"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P017"}, "pulgadas": {"N": "25"}, "resolucion": {"S": "1080p"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P018"}, "pulgadas": {"N": "22"}, "resolucion": {"S": "1080p"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P019"}, "pulgadas": {"N": "15"}, "resolucion": {"S": "1080p"}, "imagen_original_key": {"S": "PENDIENTE"} } } },
+    { "PutRequest": { "Item": { "producto_id": {"S": "P020"}, "pulgadas": {"N": "24"}, "resolucion": {"S": "1080p Táctil"}, "imagen_original_key": {"S": "PENDIENTE"} } } }
+  ]
+}
