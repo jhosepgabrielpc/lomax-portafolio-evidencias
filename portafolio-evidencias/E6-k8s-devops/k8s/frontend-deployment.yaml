@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy-frontend
+  template:
+    metadata:
+      labels:
+        app: proxy-frontend
+    spec:
+      containers:
+      - name: proxy-frontend
+        image: 984220190811.dkr.ecr.us-east-2.amazonaws.com/proxy-frontend:af3aa37
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-frontend
+spec:
+  selector:
+    app: proxy-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort

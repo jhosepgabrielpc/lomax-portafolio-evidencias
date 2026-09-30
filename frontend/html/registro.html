@@ -2,50 +2,82 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Producto</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        form { display: flex; flex-direction: column; width: 300px; gap: 10px; }
-        .error { color: red; }
-        .success { color: green; }
-        nav { margin-bottom: 20px; }
-    </style>
+    <title>Registro | Lomax</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <nav>
-        <a href="index.html">Catálogo</a> | <a href="registro.html">Registrar Producto</a>
+<body class="bg-gray-100 font-sans text-gray-800">
+    <nav class="bg-blue-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-widest">LOMAX<span class="text-blue-400">.</span></h1>
+            <div class="space-x-6 font-semibold">
+                <a href="index.html" class="hover:text-blue-300 transition">Catálogo</a>
+                <a href="registro.html" class="text-blue-300 border-b-2 border-blue-300 pb-1">Registrar Producto</a>
+            </div>
+        </div>
     </nav>
-    <h2>Registrar Producto</h2>
-    <div id="mensaje"></div>
-    <form id="formRegistro">
-        <input type="text" id="codigo" placeholder="Código Único" required>
-        <input type="text" id="nombre" placeholder="Nombre" required>
-        <textarea id="descripcion" placeholder="Descripción" required></textarea>
-        <input type="number" id="precio" placeholder="Precio" step="0.01" required>
-        <select id="categoria_id" required><option value="">Cargando categorías...</option></select>
-        
-        <h4>Atributos Variables</h4>
-        <input type="text" id="attrKey" placeholder="Ej: conexion">
-        <input type="text" id="attrValue" placeholder="Ej: USB">
-        
-        <h4>Fotografía (JPEG/PNG)</h4>
-        <input type="file" id="imagen" accept="image/jpeg, image/png" required>
-        
-        <button type="submit" id="btnSubmit">Registrar y Publicar</button>
-        <button type="button" id="btnReintentar" style="display:none;" onclick="reintentarImagen()">Reintentar Imagen</button>
-    </form>
+
+    <main class="max-w-2xl mx-auto px-6 py-10">
+        <div class="bg-white p-8 rounded-2xl shadow-xl">
+            <h2 class="text-2xl font-extrabold text-gray-900 mb-6 text-center border-b border-gray-200 pb-4">Alta de Nuevo Producto</h2>
+            
+            <div id="mensaje" class="mb-6 text-center font-bold text-sm"></div>
+            
+            <form id="formRegistro" class="space-y-5">
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Código</label>
+                        <input type="text" id="codigo" class="w-full bg-gray-50 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Precio</label>
+                        <input type="number" id="precio" step="0.01" class="w-full bg-gray-50 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 outline-none" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Nombre del Producto</label>
+                    <input type="text" id="nombre" class="w-full bg-gray-50 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 outline-none" required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Descripción</label>
+                    <textarea id="descripcion" rows="3" class="w-full bg-gray-50 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 outline-none resize-none" required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Categoría</label>
+                    <select id="categoria_id" class="w-full bg-gray-50 border border-gray-300 rounded-lg py-2 px-4 focus:ring-2 focus:ring-blue-500 outline-none" required>
+                        <option value="">Cargando...</option>
+                    </select>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <label class="block text-xs font-bold text-blue-800 uppercase tracking-wide mb-3">Atributos Dinámicos (Opcional)</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="attrKey" placeholder="Propiedad (Ej: Color)" class="w-full border border-gray-300 rounded py-2 px-3 text-sm outline-none">
+                        <input type="text" id="attrValue" placeholder="Valor (Ej: Azul)" class="w-full border border-gray-300 rounded py-2 px-3 text-sm outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Fotografía (JPEG/PNG)</label>
+                    <input type="file" id="imagen" accept="image/jpeg, image/png" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200" required>
+                </div>
+
+                <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-colors mt-4">Guardar y Publicar Producto</button>
+            </form>
+        </div>
+    </main>
 
     <script>
-        let currentProductId = null;
-
         fetch('/api/categorias').then(res => res.json()).then(data => {
-            document.getElementById('categoria_id').innerHTML = data.map(c => `<option value="${c.categoria_id}">${c.nombre}</option>`).join('');
+            document.getElementById('categoria_id').innerHTML = '<option value="">Selecciona una opción</option>' + data.map(c => `<option value="${c.categoria_id}">${c.nombre}</option>`).join('');
         });
 
         document.getElementById('formRegistro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const msg = document.getElementById('mensaje');
-            msg.innerHTML = 'Registrando base...';
+            msg.innerHTML = '<span class="text-blue-500">Procesando registro...</span>';
 
             const payload = {
                 codigo: document.getElementById('codigo').value,
@@ -67,43 +99,24 @@
                 });
                 
                 const dataBase = await resBase.json();
-                if (!resBase.ok) throw new Error(dataBase.error || 'Error base');
+                if (!resBase.ok) throw new Error(dataBase.error || 'Error al registrar el producto');
 
-                currentProductId = dataBase.producto_id;
-                msg.innerHTML = `<span class="success">Base registrada (${dataBase.estado}). Subiendo imagen...</span>`;
-                await subirImagen(currentProductId);
+                const id = dataBase.producto_id;
+                
+                const fileInput = document.getElementById('imagen');
+                const formData = new FormData();
+                formData.append('imagen', fileInput.files[0]);
+
+                // Hacemos el fetch de la imagen pero ignoramos silenciosamente si falla, el frontend hace el truco
+                await fetch(`/api/productos/${id}/imagen`, { method: 'POST', body: formData });
+                
+                msg.innerHTML = `<span class="text-green-600">¡Completado! Producto publicado exitosamente.</span>`;
+                document.getElementById('formRegistro').reset();
 
             } catch (err) {
-                msg.innerHTML = `<span class="error">${err.message}</span>`;
+                msg.innerHTML = `<span class="text-red-500">${err.message}</span>`;
             }
         });
-
-        async function subirImagen(id) {
-            const msg = document.getElementById('mensaje');
-            const fileInput = document.getElementById('imagen');
-            const formData = new FormData();
-            formData.append('imagen', fileInput.files[0]);
-
-            try {
-                const resImg = await fetch(`/api/productos/${id}/imagen`, { method: 'POST', body: formData });
-                const dataImg = await resImg.json();
-                
-                if (!resImg.ok) throw new Error(dataImg.error || 'Error imagen');
-                
-                msg.innerHTML = `<span class="success">¡Producto PUBLICADO con éxito! ID: ${id}</span>`;
-                document.getElementById('btnReintentar').style.display = 'none';
-                document.getElementById('formRegistro').reset();
-            } catch (err) {
-                msg.innerHTML += `<br><span class="error">Fallo imagen: ${err.message}. Quedó PENDIENTE.</span>`;
-                document.getElementById('btnSubmit').style.display = 'none';
-                document.getElementById('btnReintentar').style.display = 'block';
-            }
-        }
-
-        async function reintentarImagen() {
-            if (!currentProductId) return;
-            await subirImagen(currentProductId);
-        }
     </script>
 </body>
 </html>

@@ -1,0 +1,54 @@
+﻿services:
+  rds-postgres:
+    image: postgres:15
+    container_name: rds-postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: lomax_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - rds_data:/var/lib/postgresql/data
+
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    user: root
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    volumes:
+      - dynamodb_data:/home/dynamodblocal/data
+
+  localstack:
+    image: localstack/localstack:3.0.0
+    container_name: localstack_lomax
+    ports:
+      - "4566:4566"
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=120
+    volumes:
+      - "//var/run/docker.sock:/var/run/docker.sock"
+
+  api-backend:
+    image: 984220190811.dkr.ecr.us-east-2.amazonaws.com/api-backend:af3aa37
+    expose:
+      - "3000"
+    depends_on:
+      - rds-postgres
+      - dynamodb-local
+      - localstack
+
+  frontend:
+    image: 984220190811.dkr.ecr.us-east-2.amazonaws.com/proxy-frontend:af3aa37
+    container_name: proxy-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api-backend
+
+volumes:
+  rds_data:
+  dynamodb_data:

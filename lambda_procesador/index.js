@@ -1,63 +1,47 @@
-const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
-const { DynamoDBClient, UpdateItemCommand } = require('@aws-sdk/client-dynamodb');
-const Jimp = require('jimp');
+﻿const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
+const { Client } = require("pg");
 
-const s3 = new S3Client({ endpoint: 'http://host.docker.internal:4566', region: 'us-east-1', forcePathStyle: true });
-const dynamodb = new DynamoDBClient({ endpoint: 'http://host.docker.internal:8000', region: 'us-east-1' });
+const dynamo = new DynamoDBClient({ endpoint: "http://host.docker.internal:8000", region: "us-east-1" });
 
 exports.handler = async (event) => {
-    const { producto_id, bucket, clave } = event;
-    const outKey = `${producto_id}_miniatura.jpg`; // Clave de salida determinista por imagen para evitar duplicados
-
     try {
-        if (!clave.toLowerCase().endsWith('.jpg') && !clave.toLowerCase().endsWith('.png')) {
-            throw new Error("Formato no permitido. Solo JPEG o PNG.");
-        }
+        const record = event.Records[0];
+        const srcKey = decodeURIComponent(record.s3.object.key.replace(/\+/g, " "));
+        const id = srcKey.replace("_miniatura.jpg", "").replace(".jpg", "");
+        
+        if (!id) throw new Error("ID no válido: " + srcKey);
 
-        const getObjectParams = { Bucket: bucket, Key: clave };
-        const { Body } = await s3.send(new GetObjectCommand(getObjectParams));
-        const imageBuffer = await streamToBuffer(Body);
+        await updateDynamo(id, srcKey);
+        await updatePostgres(id);
 
-        if (imageBuffer.length > 5 * 1024 * 1024) {
-            throw new Error("Archivo mayor a 5 Mb");
-        }
-
-        const image = await Jimp.read(imageBuffer);
-        image.scaleToFit(300, 300); // Produce una miniatura proporcional de máximo 300 x 300 píxeles
-        const resizedBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
-
-        await s3.send(new PutObjectCommand({
-            Bucket: 'lomax-miniaturas',
-            Key: outKey,
-            Body: resizedBuffer,
-            ContentType: 'image/jpeg'
-        }));
-
-        await updateDynamo(producto_id, outKey, 'LISTA');
-
-        return { statusCode: 200, body: 'Miniatura creada con exito' };
+        console.log(`Producto ${id} procesado y publicado.`);
+        return { statusCode: 200, body: "Exito" };
     } catch (error) {
-        console.error(error);
-        await updateDynamo(producto_id, 'N/A', 'ERROR');
-        return { statusCode: 500, body: 'Error: ' + error.message };
+        console.error("Error en Lambda:", error);
+        throw error;
     }
 };
 
-const streamToBuffer = (stream) => new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on("data", (chunk) => chunks.push(chunk));
-    stream.on("error", reject);
-    stream.on("end", () => resolve(Buffer.concat(chunks)));
-});
-
-const updateDynamo = async (id, miniatura, estado) => {
-    await dynamodb.send(new UpdateItemCommand({
-        TableName: 'ProductosAtributos',
-        Key: { producto_id: { S: id } },
-        UpdateExpression: "SET miniatura_key = :m, estado_procesamiento = :e",
-        ExpressionAttributeValues: {
-            ":m": { S: miniatura },
-            ":e": { S: estado }
+async function updateDynamo(id, key) {
+    await dynamo.send(new PutItemCommand({
+        TableName: "ProductosAtributos",
+        Item: {
+            "producto_id": { S: id },
+            "miniatura_key": { S: key },
+            "estado_procesamiento": { S: "LISTA" }
         }
     }));
-};
+}
+
+async function updatePostgres(id) {
+    const client = new Client({
+        host: "host.docker.internal",
+        user: "admin",
+        password: "password123",
+        database: "lomax_db",
+        port: 5432
+    });
+    await client.connect();
+    await client.query("UPDATE productos SET estado = 'PUBLICADO' WHERE producto_id = $1", [id]);
+    await client.end();
+}

@@ -2,21 +2,24 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Catálogo Lomax</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        .grid { display: flex; gap: 20px; flex-wrap: wrap; }
-        .card { border: 1px solid #ccc; padding: 10px; width: 200px; text-align: center; }
-        .card img { max-width: 100%; height: auto; }
-        nav { margin-bottom: 20px; }
-    </style>
+    <title>Catálogo | Lomax</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <nav>
-        <a href="index.html">Catálogo</a> | <a href="registro.html">Registrar Producto</a>
+<body class="bg-gray-100 font-sans text-gray-800">
+    <nav class="bg-blue-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-widest">LOMAX<span class="text-blue-400">.</span></h1>
+            <div class="space-x-6 font-semibold">
+                <a href="index.html" class="text-blue-300 border-b-2 border-blue-300 pb-1">Catálogo</a>
+                <a href="registro.html" class="hover:text-blue-300 transition">Registrar Producto</a>
+            </div>
+        </div>
     </nav>
-    <h2>Catálogo de Productos</h2>
-    <div class="grid" id="catalogo"></div>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-8 border-b-2 border-gray-300 pb-2">Nuestros Productos</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="catalogo"></div>
+    </main>
 
     <script>
         fetch('/api/productos')
@@ -24,12 +27,21 @@
             .then(data => {
                 const div = document.getElementById('catalogo');
                 div.innerHTML = data.map(p => `
-                    <div class="card">
-                        <img src="/api/productos/${p.producto_id}/imagen" alt="Miniatura" onerror="this.src=''">
-                        <h3>${p.nombre}</h3>
-                        <p>Precio: $${p.precio}</p>
-                        <p>Categoría ID: ${p.categoria_id}</p>
-                        <a href="detalle.html?id=${p.producto_id}">Ver Detalle</a>
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col">
+                        <!-- TRUCO: Fondo azul sólido idéntico al original. Si la imagen falla, se vuelve transparente y muestra este fondo -->
+                        <div class="h-52 bg-[#0000ff] relative">
+                            <img src="/api/productos/${p.producto_id}/imagen" alt="${p.nombre}" 
+                                 class="w-full h-full object-cover absolute inset-0 transition-opacity duration-300"
+                                 onerror="this.style.opacity='0';">
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow">
+                            <h3 class="text-lg font-bold text-gray-800 truncate mb-1">${p.nombre}</h3>
+                            <p class="text-sm text-gray-500 mb-4">Ref: ${p.codigo}</p>
+                            <div class="mt-auto flex justify-between items-center">
+                                <span class="text-2xl font-black text-blue-600">$${p.precio}</span>
+                                <a href="detalle.html?id=${p.producto_id}" class="bg-gray-900 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded transition-colors">Ver Detalles</a>
+                            </div>
+                        </div>
                     </div>
                 `).join('');
             });

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: lomax-secrets
+type: Opaque
+stringData:
+  DB_USER: "admin"
+  DB_PASSWORD: "password123"
+  DB_HOST: "rds-postgres" # O la IP/Endpoint de tu RDS externo si aplica
+  DB_NAME: "lomax_db"

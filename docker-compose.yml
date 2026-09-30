@@ -1,4 +1,4 @@
-services:
+﻿services:
   rds-postgres:
     image: postgres:15
     container_name: rds-postgres
@@ -33,15 +33,16 @@ services:
       - "//var/run/docker.sock:/var/run/docker.sock"
 
   api-backend:
-    build: ./backend_api
-    container_name: api-backend
+    image: 984220190811.dkr.ecr.us-east-2.amazonaws.com/api-backend:af3aa37
+    expose:
+      - "3000"
     depends_on:
       - rds-postgres
       - dynamodb-local
       - localstack
 
   frontend:
-    build: ./frontend
+    image: 984220190811.dkr.ecr.us-east-2.amazonaws.com/proxy-frontend:af3aa37
     container_name: proxy-frontend
     ports:
       - "80:80"

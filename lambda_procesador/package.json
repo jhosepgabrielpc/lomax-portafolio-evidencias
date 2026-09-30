@@ -14,6 +14,7 @@
     "@aws-sdk/client-dynamodb": "^3.1142.0",
     "@aws-sdk/client-s3": "^3.1142.0",
     "@babel/runtime": "^8.0.5",
-    "jimp": "^0.16.13"
+    "jimp": "^0.16.13",
+    "pg": "^8.23.0"
   }
 }
